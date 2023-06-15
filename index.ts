@@ -1,4 +1,6 @@
-import got from "got";
+// @ts-ignore
+import got from "got"; 
+
 import { createHmac } from "crypto";
 import OAuth from "oauth-1.0a";
 import express from "express";
@@ -7,16 +9,16 @@ import cors from "cors";
 const app = express();
 app.use(cors());
 
-const consumer_key = process.env.consumer_key;
-const consumer_secret = process.env.consumer_secret;
+const consumer_key = process.env.consumer_key as string;
+const consumer_secret = process.env.consumer_secret as string;
 
-const oauth_token = process.env.oauth_token;
-const oauth_token_secret = process.env.oauth_token_secret;
+const oauth_token = process.env.oauth_token as string;
+const oauth_token_secret = process.env.oauth_token_secret as string;
 
 // Be sure to add replace the text of the with the text you wish to Tweet.
 // You can also add parameters to post polls, quote Tweets, Tweet with reply settings, and Tweet to Super Followers in addition to other features.
 
-function getRandomHash(length) {
+function getRandomHash(length = 5) {
   const chars =
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let result = "";
@@ -26,19 +28,18 @@ function getRandomHash(length) {
 }
 
 const data = {
-  text: "API test: Hello world! - " + getRandomHash(5),
+  text: "API test: Hello world! - " + getRandomHash(),
 };
 
 const endpointURL = `https://api.twitter.com/2/tweets`;
 
-const oauth = OAuth({
+const oauth = new OAuth({
   consumer: {
     key: consumer_key,
     secret: consumer_secret,
   },
   signature_method: "HMAC-SHA1",
-  hash_function: (baseString, key) =>
-    createHmac("sha1", key).update(baseString).digest("base64"),
+  hash_function: (baseString, key) => createHmac("sha1", key).update(baseString).digest("base64"),
 });
 
 async function getRequest({ oauth_token, oauth_token_secret }) {
