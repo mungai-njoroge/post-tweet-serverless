@@ -78,7 +78,7 @@ async function sendTweet(data: Request) {
   }
 }
 
-app.post("/tweet", async (req, res) => {
+app.post("/api/tweet", async (req, res) => {
   const { api_key } = req.query;
 
   if (!api_key || api_key !== API_KEY) {
